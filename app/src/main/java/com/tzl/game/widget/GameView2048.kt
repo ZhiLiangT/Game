@@ -406,4 +406,16 @@ class GameView2048 :View{
     fun setScoreScale(scale: Int) {
         this.scale = scale
     }
+
+    /**设置数据*/
+    fun setData(data:Array<IntArray>?){
+        if (data!=null && data.isNotEmpty()){
+            attr=data
+            invalidate()
+        }
+    }
+
+    fun getData():Array<IntArray>{
+        return attr
+    }
 }
