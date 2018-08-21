@@ -329,12 +329,18 @@ class GameView2048 :View{
                 }
             }
         }
+        if (isFinish()){
+            if (listener!=null){
+                listener!!.onFinish()
+            }
+        }
     }
 
     /**
      * 重新开始
      */
     fun reStart() {
+        totalScore=0
         attr =  Array(verticalNum){IntArray(horizontalNum)}
         for (i in 0 until verticalNum) {
             attr[i] = IntArray(horizontalNum)
@@ -343,20 +349,34 @@ class GameView2048 :View{
             val h = (Math.random() * 5).toInt()
             val v = (Math.random() * 5).toInt()
             if (attr[h][v] == 0) {
-                if (totalScore>5000 && (h+v)>5){
-                    attr[h][v] = 4
-                }else{
-                    attr[h][v] = 2
-                }
+                attr[h][v] = 2
             }
         }
+        invalidate()
     }
 
     /**
      * 判断是否结束
      */
-    fun isFinish() {
-
+    private fun isFinish() :Boolean{
+        for (i in attr.indices){
+            for (j in 0 until attr.size){
+                if (attr[i][j]==0){
+                    return isFinish@false
+                }
+                if (j<attr.size-1){
+                    if (attr[i][j]==attr[i][j+1]){
+                        return isFinish@false
+                    }
+                }
+                if (i<attr.size-1){
+                    if (attr[j][i] == attr[j][i+1]){
+                        return isFinish@false
+                    }
+                }
+            }
+        }
+        return true
     }
 
     /**
@@ -364,6 +384,7 @@ class GameView2048 :View{
      */
     interface OnScoreChangeListener {
         fun onChange(total: Int)
+        fun onFinish()
     }
 
     fun setOnScoreChangeListener(listener: OnScoreChangeListener) {
@@ -414,8 +435,18 @@ class GameView2048 :View{
             invalidate()
         }
     }
-
+    /**获取数据*/
     fun getData():Array<IntArray>{
         return attr
+    }
+
+    /**设置分数*/
+    fun setScore(score:Int){
+        totalScore=score
+    }
+
+    /**获取分数*/
+    fun getScore():Int{
+        return totalScore
     }
 }
