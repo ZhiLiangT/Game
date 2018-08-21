@@ -15,6 +15,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         gameView=findViewById(R.id.game_view)
         tvScore=findViewById(R.id.tv_score)
-        gameView!!.setOnScoreChangeListener { total -> tvScore!!.text="分数为：$total" }
+        gameView!!.setOnScoreChangeListener(object :GameView2048.OnScoreChangeListener{
+            override fun onChange(total: Int) {
+                tvScore!!.text="分数为：$total"
+            }
+        })
     }
 }
