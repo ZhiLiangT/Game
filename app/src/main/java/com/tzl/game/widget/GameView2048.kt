@@ -106,8 +106,8 @@ class GameView2048 :View{
                 attr[i] = IntArray(horizontalNum)
             }
             for (i in 0..1) {
-                val h = (Math.random() * 5).toInt()
-                val v = (Math.random() * 5).toInt()
+                val h = (Math.random() * horizontalNum).toInt()
+                val v = (Math.random() * verticalNum).toInt()
                 if (attr[h][v] == 0) {
                     attr[h][v] = 2
                 }
