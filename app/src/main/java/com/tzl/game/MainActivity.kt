@@ -9,9 +9,11 @@ import android.widget.Button
 import android.widget.TextView
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+
 import com.tzl.game.widget.GameOverDialog
 import com.tzl.game.widget.GameView2048
 
+@SuppressLint("SetTextI18n")
 class MainActivity : AppCompatActivity(), View.OnClickListener{
 
     private lateinit var gameView: GameView2048
@@ -59,6 +61,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
                 })
                 dialog.show(supportFragmentManager,"")
             }
+
             override fun onChange(total: Int) {
                 currScore=total
                 setCurrScore(currScore)
@@ -72,13 +75,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
 
     @SuppressLint("CommitPrefEdits")
     private fun init() {
-        sp=getSharedPreferences("data",0)
-        mostScore=sp!!.getInt("score",0)
-        currScore=sp!!.getInt("curr_score",0)
-        val attrStr=sp!!.getString("attr","")
+        sp=getSharedPreferences(Configure.SP_NAME,0)
+        mostScore=sp!!.getInt(Configure.GAME_HIGHEST_SOCRE,0)
+        currScore=sp!!.getInt(Configure.GAME_CURR_SCORE,0)
+        val attrStr=sp!!.getString(Configure.GAME_DATA_JSON,"")
         val gson:Gson=GsonBuilder().create()
         data =gson.fromJson<Array<IntArray>>(attrStr, Array<IntArray>::class.java)
-        currSize=sp!!.getInt("curr_size",currSize)
+        currSize=sp!!.getInt(Configure.GAME_CURR_SIZE,currSize)
         gameView.setCoordinateSize(currSize)
         gameView.setData(data)
         tvMostScore.text="最高分数为:\n$mostScore"
@@ -89,14 +92,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     @SuppressLint("CommitPrefEdits")
     override fun onPause() {
         super.onPause()
-        sp=getSharedPreferences("data",0)
+        sp=getSharedPreferences(Configure.SP_NAME,0)
         val editor = sp!!.edit()
         val gson:Gson=GsonBuilder().create()
         val str=gson.toJson(gameView.getData())
-        editor.putString("attr",str)
-        editor.putInt("score",mostScore)
-        editor.putInt("curr_score",currScore)
-        editor.putInt("curr_size",currSize)
+        editor.putString(Configure.GAME_DATA_JSON,str)
+        editor.putInt(Configure.GAME_HIGHEST_SOCRE,mostScore)
+        editor.putInt(Configure.GAME_CURR_SCORE,currScore)
+        editor.putInt(Configure.GAME_CURR_SIZE,currSize)
         editor.apply()
     }
     @SuppressLint("SetTextI18n")
