@@ -14,11 +14,11 @@ import com.tzl.game.R
 class GameOverDialog:DialogFragment(),View.OnClickListener{
 
 
-    private var btConfirm: Button?=null
+    private lateinit var btConfirm: Button
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view=inflater.inflate(R.layout.dialog_game_over,container,false)
         btConfirm=view.findViewById(R.id.bt_confirm)
-        btConfirm!!.setOnClickListener(this)
+        btConfirm.setOnClickListener(this)
         return view
     }
 

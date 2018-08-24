@@ -16,6 +16,7 @@ import com.tzl.game.utils.CountUtils
 
 
 /**
+ * 2048Game 自定义View
  * Create by 田志亮 on 2018/8/18
  */
 class GameView2048 :View{
@@ -65,19 +66,26 @@ class GameView2048 :View{
     private lateinit var textPaint: Paint
     /**文字颜色集合*/
     private lateinit var colorAttr:IntArray
+    /**按下的开始坐标*/
     private var startX: Int = 0
     private var startY: Int = 0
+    /**是否滑动*/
     private var isMove = false
-
-    /**判断是否发生了变化 */
+    /**判断数据是否发生了变化 */
     private var isChange = false
+    /**状态监听，分数监听和游戏失败监听*/
     private var listener: OnScoreChangeListener? = null
 
     /**
      * 测试数据
      */
     private fun testData() {
-        attr = arrayOf(intArrayOf(0, 2, 0, 8, 16), intArrayOf(0, 0, 0, 0, 0), intArrayOf(0, 0, 0, 0, 0), intArrayOf(0, 0, 0, 0, 0), intArrayOf(2, 0, 0, 0, 2))
+        attr = arrayOf(
+                intArrayOf(0, 2, 0, 8, 16),
+                intArrayOf(0, 0, 0, 0, 0),
+                intArrayOf(0, 0, 0, 0, 0),
+                intArrayOf(0, 0, 0, 0, 0),
+                intArrayOf(2, 0, 0, 0, 2))
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -88,6 +96,7 @@ class GameView2048 :View{
         itemWidht = viewWidth / horizontalNum
     }
 
+    /**初始化*/
     private fun init(attrs: AttributeSet?, defStyleAttr: Int) {
         val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.GameView2048, defStyleAttr, 0)
         if (isTest) {
@@ -395,6 +404,7 @@ class GameView2048 :View{
         dividerSize = size
     }
 
+    /**设置背景颜色*/
     override fun setBackgroundColor(@ColorRes color: Int) {
         bgColor = color
     }
@@ -416,6 +426,7 @@ class GameView2048 :View{
         reStart()
     }
 
+    /**设置坐标大小 */
     fun setCoordinateSize(size:Int){
         setCoordinateSize(size,size)
     }
