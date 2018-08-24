@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     private var mostScore:Int=0
     private var data:Array<IntArray> ?=null
     private var currScore:Int=0
+    private var currSize=4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +78,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         val attrStr=sp!!.getString("attr","")
         val gson:Gson=GsonBuilder().create()
         data =gson.fromJson<Array<IntArray>>(attrStr, Array<IntArray>::class.java)
+        currSize=sp!!.getInt("curr_size",currSize)
+        gameView.setCoordinateSize(currSize)
         gameView.setData(data)
         tvMostScore.text="最高分数为:\n$mostScore"
         setCurrScore(currScore)
@@ -93,6 +96,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
         editor.putString("attr",str)
         editor.putInt("score",mostScore)
         editor.putInt("curr_score",currScore)
+        editor.putInt("curr_size",currSize)
         editor.apply()
     }
     @SuppressLint("SetTextI18n")
@@ -104,18 +108,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
                 setCurrScore(0)
             }
             R.id.bt_3   ->{
+                currSize=3
                 gameView.setCoordinateSize(3)
                 setCurrScore(0)
             }
             R.id.bt_4   ->{
+                currSize=4
                 gameView.setCoordinateSize(4)
                 setCurrScore(0)
             }
             R.id.bt_5   ->{
+                currSize=5
                 gameView.setCoordinateSize(5)
                 setCurrScore(0)
             }
             R.id.bt_6   ->{
+                currSize=6
                 gameView.setCoordinateSize(6)
                 setCurrScore(0)
             }
