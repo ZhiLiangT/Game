@@ -1,17 +1,18 @@
 package com.tzl.game.widget
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.support.annotation.ColorRes
 import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 
 import com.tzl.game.R
+import com.tzl.game.utils.CountUtils
 
 
 /**
@@ -59,20 +60,11 @@ class GameView2048 :View{
     /**是否开启Test模式 */
     private val isTest = false
     /**画笔 */
-    private var paint: Paint? = null
+    private lateinit var paint: Paint
     /**文字画笔 */
-    private var textPaint: Paint? = null
-
-    private val color_2 = Color.parseColor("#EEE4DA")
-    private val color_4 = Color.parseColor("#EDE0C8")
-    private val color_8 = Color.parseColor("#F2B179")
-    private val color_16 = Color.parseColor("#F59563")
-    private val color_32 = Color.parseColor("#F67C5F")
-    private val color_64 = Color.parseColor("#EDCF72")
-    private val color_128 = Color.parseColor("#F2CF60")
-    private val color_256 = Color.parseColor("#F65E3B")
-    private val color_512 = Color.parseColor("#EDC850")
-    private val color_1024 = Color.parseColor("#EDC53F")
+    private lateinit var textPaint: Paint
+    /**文字颜色集合*/
+    private lateinit var colorAttr:IntArray
     private var startX: Int = 0
     private var startY: Int = 0
     private var isMove = false
@@ -121,55 +113,54 @@ class GameView2048 :View{
         textSize = typedArray.getDimension(R.styleable.GameView2048_game_text_size, textSize)
         typedArray.recycle()
         paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint!!.strokeWidth = dividerSize
-        paint!!.color = dividerColor
+        paint.strokeWidth = dividerSize
+        paint.color = dividerColor
         textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
-        textPaint!!.textAlign = Paint.Align.CENTER
-        textPaint!!.textSize = textSize
-        textPaint!!.color = textColor
-
+        textPaint.textAlign = Paint.Align.CENTER
+        textPaint.textSize = textSize
+        textPaint.color = textColor
+        colorAttr= intArrayOf( Color.parseColor("#EEE4DA") , Color.parseColor("#EDE0C8") ,
+                               Color.parseColor("#F2B179") , Color.parseColor("#F59563") ,
+                               Color.parseColor("#F67C5F") , Color.parseColor("#EDCF72") ,
+                               Color.parseColor("#F2CF60") , Color.parseColor("#F65E3B") ,
+                               Color.parseColor("#EDC850") , Color.parseColor("#EDC53F") )
     }
 
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawColor(bgColor)
-        paint!!.color = dividerColor
+        paint.color = dividerColor
+        Log.i("TAG","onDraw horizontalNum==$horizontalNum verticalNum ==$verticalNum")
         //绘制横向分割线
         for (i in 0..verticalNum) {
-            canvas.drawLine(0f, i * itemWidht, viewWidth, i * itemWidht, paint!!)
+            canvas.drawLine(0f, i * itemWidht, viewWidth, i * itemWidht, paint)
         }
         //绘制纵向分割线
         for (i in 0..horizontalNum) {
-            canvas.drawLine(i * itemHeight, 0f, i * itemHeight, viewHeight, paint!!)
+            canvas.drawLine(i * itemHeight, 0f, i * itemHeight, viewHeight, paint)
         }
         for (i in attr.indices) {
             for (j in 0 until attr[i].size) {
                 if (attr[i][j] != 0) {
-                    when (attr[i][j]) {
-                        2 -> paint!!.color = color_2
-                        4 -> paint!!.color = color_4
-                        8 -> paint!!.color = color_8
-                        16 -> paint!!.color = color_16
-                        32 -> paint!!.color = color_32
-                        64 -> paint!!.color = color_64
-                        128 -> paint!!.color = color_128
-                        256 -> paint!!.color = color_256
-                        512 -> paint!!.color = color_512
-                        1024 -> paint!!.color = color_1024
-                    }
+                    paint.color= colorAttr[CountUtils.log2(attr[i][j].toDouble()).toInt()]
                     canvas.drawRect(itemWidht * i + dividerSize / 2, itemHeight * j + dividerSize / 2,
-                            itemWidht * (i + 1) - dividerSize / 2, itemHeight * (j + 1) - dividerSize / 2, paint!!)
+                            itemWidht * (i + 1) - dividerSize / 2, itemHeight * (j + 1) - dividerSize / 2, paint)
                     canvas.drawText(attr[i][j].toString() + "", (i + 0.5).toFloat() * itemWidht,
-                            (j + 0.5).toFloat() * itemHeight - (textPaint!!.descent() + textPaint!!.ascent()) / 2, textPaint!!)
+                            (j + 0.5).toFloat() * itemHeight - (textPaint.descent() + textPaint.ascent()) / 2, textPaint)
                 }
             }
         }
     }
 
+    override fun performClick(): Boolean {
+        return super.performClick()
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                performClick()
                 isMove = false
                 startX = event.x.toInt()
                 startY = event.y.toInt()
@@ -315,8 +306,8 @@ class GameView2048 :View{
     private fun makeRandom() {
         if (isChange) {
             while (true) {
-                val h = (Math.random() * 5).toInt()
-                val v = (Math.random() * 5).toInt()
+                val h = (Math.random() * horizontalNum).toInt()
+                val v = (Math.random() * horizontalNum).toInt()
                 val s = (Math.random() * 10).toInt()
                 if (attr[h][v] == 0) {
                     if (s>7){
@@ -342,17 +333,18 @@ class GameView2048 :View{
     fun reStart() {
         totalScore=0
         attr =  Array(verticalNum){IntArray(horizontalNum)}
+        Log.i("TAG","horizontalNum==$horizontalNum verticalNum ==$verticalNum")
         for (i in 0 until verticalNum) {
             attr[i] = IntArray(horizontalNum)
         }
         for (i in 0..1) {
-            val h = (Math.random() * 5).toInt()
-            val v = (Math.random() * 5).toInt()
+            val h = (Math.random() * horizontalNum).toInt()
+            val v = (Math.random() * verticalNum).toInt()
             if (attr[h][v] == 0) {
                 attr[h][v] = 2
             }
         }
-        invalidate()
+        requestLayout()
     }
 
     /**
@@ -421,6 +413,11 @@ class GameView2048 :View{
     fun setCoordinateSize(horizontal: Int, vertical: Int) {
         horizontalNum = horizontal
         verticalNum = vertical
+        reStart()
+    }
+
+    fun setCoordinateSize(size:Int){
+        setCoordinateSize(size,size)
     }
 
     /**设置分数比例 每次消除合并后的值*scale 加在总分数上 */
@@ -448,5 +445,11 @@ class GameView2048 :View{
     /**获取分数*/
     fun getScore():Int{
         return totalScore
+    }
+
+    /**设置颜色集合*/
+    fun setColors(colors:IntArray){
+        colorAttr=colors
+        invalidate()
     }
 }

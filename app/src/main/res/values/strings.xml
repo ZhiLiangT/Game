@@ -2,4 +2,6 @@
     <string name="app_name">Game</string>
     <string name="game_over">游戏结束,重新开始！！</string>
     <string name="confirm">确定</string>
+    <string name="curr_score">当前分数:</string>
+    <string name="total_score">最高分数:</string>
 </resources>
