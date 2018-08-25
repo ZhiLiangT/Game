@@ -75,6 +75,8 @@ class GameView2048 :View{
     private var isChange = false
     /**状态监听，分数监听和游戏失败监听*/
     private var listener: OnScoreChangeListener? = null
+    /**回退集合*/
+    private var backList:MutableList<Array<IntArray>> = mutableListOf()
 
     /**
      * 测试数据
@@ -113,6 +115,7 @@ class GameView2048 :View{
                 }
             }
         }
+        backList.add(attr)
         horizontalNum = typedArray.getInteger(R.styleable.GameView2048_game_horizontal, 5)
         verticalNum = typedArray.getInteger(R.styleable.GameView2048_game_vertical, 5)
         bgColor = typedArray.getColor(R.styleable.GameView2048_game_bg, bgColor)
@@ -309,6 +312,12 @@ class GameView2048 :View{
             listener!!.onChange(totalScore)
         }
         makeRandom()
+        if (isChange){
+            if (backList.size>4){
+                backList.removeAt(0)
+                backList.add(attr)
+            }
+        }
     }
 
     /**重新生成随机数 */
@@ -340,9 +349,9 @@ class GameView2048 :View{
      * 重新开始
      */
     fun reStart() {
+        backList.clear()
         totalScore=0
         attr =  Array(verticalNum){IntArray(horizontalNum)}
-        Log.i("TAG","horizontalNum==$horizontalNum verticalNum ==$verticalNum")
         for (i in 0 until verticalNum) {
             attr[i] = IntArray(horizontalNum)
         }
@@ -380,6 +389,14 @@ class GameView2048 :View{
         return true
     }
 
+    fun stepBack(){
+        if (backList.size>0){
+            attr=backList[backList.size-2]
+            backList.removeAt(backList.size-1)
+            invalidate()
+        }
+    }
+
     /**
      * 回调分数
      */
@@ -392,7 +409,7 @@ class GameView2048 :View{
         this.listener = listener
     }
 
-    /********************************************set方法*****************************************/
+    /*****************************************get/set方法***************************************/
 
     /**设置分割线颜色 */
     fun setDividerColor(@ColorRes color: Int) {
