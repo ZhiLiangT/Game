@@ -13,6 +13,7 @@ import android.view.View
 
 import com.tzl.game.R
 import com.tzl.game.utils.CountUtils
+import com.tzl.game.utils.JsonUtil
 
 
 /**
@@ -143,7 +144,6 @@ class GameView2048 :View{
         super.onDraw(canvas)
         canvas.drawColor(bgColor)
         paint.color = dividerColor
-        Log.i("TAG","onDraw horizontalNum==$horizontalNum verticalNum ==$verticalNum")
         //绘制横向分割线
         for (i in 0..verticalNum) {
             canvas.drawLine(0f, i * itemWidht, viewWidth, i * itemWidht, paint)
@@ -315,8 +315,12 @@ class GameView2048 :View{
         if (isChange){
             if (backList.size>4){
                 backList.removeAt(0)
-                backList.add(attr)
             }
+            Log.i("TAG","attr == ${JsonUtil.toJson(attr)}")
+            val a: Array<IntArray> = Array(verticalNum){IntArray(horizontalNum)}
+            System.arraycopy(attr,0,a,0,attr.size)
+            backList.add(a)
+            Log.i("TAG","backList == ${JsonUtil.toJson(backList)}")
         }
     }
 
@@ -389,8 +393,9 @@ class GameView2048 :View{
         return true
     }
 
+    /**后退一步*/
     fun stepBack(){
-        if (backList.size>0){
+        if (backList.size>1){
             attr=backList[backList.size-2]
             backList.removeAt(backList.size-1)
             invalidate()

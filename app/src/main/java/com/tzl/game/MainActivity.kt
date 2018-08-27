@@ -105,7 +105,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     @SuppressLint("SetTextI18n")
     override fun onClick(v: View?) {
         when(v!!.id){
-            R.id.bt_back    -> {}
+            R.id.bt_back    -> {
+                gameView.stepBack()
+            }
             R.id.bt_restart -> {
                 gameView.reStart()
                 setCurrScore(0)
