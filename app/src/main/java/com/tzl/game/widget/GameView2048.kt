@@ -319,7 +319,7 @@ class GameView2048 :View{
             Log.i("TAG","attr == ${JsonUtil.toJson(attr)}")
             val a: Array<IntArray> = Array(verticalNum){IntArray(horizontalNum)}
             System.arraycopy(attr,0,a,0,attr.size)
-            backList.add(a)
+            backList.add( attr.copyOf())
             Log.i("TAG","backList == ${JsonUtil.toJson(backList)}")
         }
     }
