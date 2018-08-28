@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
     override fun onClick(v: View?) {
         when(v!!.id){
             R.id.bt_back    -> {
-                //gameView.stepBack()
+                gameView.stepBack()
             }
             R.id.bt_restart -> {
                 gameView.reStart()

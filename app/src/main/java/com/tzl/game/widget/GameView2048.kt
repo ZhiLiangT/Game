@@ -317,9 +317,13 @@ class GameView2048 :View{
                 backList.removeAt(0)
             }
             Log.i("TAG","attr == ${JsonUtil.toJson(attr)}")
-            val a: Array<IntArray> = Array(verticalNum){IntArray(horizontalNum)}
-            System.arraycopy(attr,0,a,0,attr.size)
-            backList.add( attr.copyOf())
+            val copy: Array<IntArray> = Array(verticalNum){IntArray(horizontalNum)}
+            for (index in attr.indices){
+                val temp = IntArray(horizontalNum)
+                System.arraycopy(attr[index], 0, temp, 0, attr[index].size)
+                copy[index]=temp
+            }
+            backList.add(copy)
             Log.i("TAG","backList == ${JsonUtil.toJson(backList)}")
         }
     }
