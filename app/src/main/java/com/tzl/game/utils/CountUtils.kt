@@ -12,6 +12,7 @@ object CountUtils {
     fun log(value:Double,base:Double): Double {
         return Math.log(value)/Math.log(base)
     }
+
     /**
      * 对数计算
      * 重载底数为2
@@ -19,6 +20,7 @@ object CountUtils {
     fun log2(value:Double):Double{
         return log(value,2.0)
     }
+
     /**
      * 对数计算
      * 重载底数为10

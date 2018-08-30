@@ -342,7 +342,7 @@ class GameView2048 :View{
                         attr[h][v] = 2
                     }
                     invalidate()
-                    return
+                    break
                 }
             }
         }
@@ -388,7 +388,7 @@ class GameView2048 :View{
                     }
                 }
                 if (i<attr.size-1){
-                    if (attr[j][i] == attr[j][i+1]){
+                    if (attr[i][j] == attr[i+1][j]){
                         return isFinish@false
                     }
                 }
